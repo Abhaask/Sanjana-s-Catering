@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu with Scroll Animation</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+      height: 250vh; /* Extended height for better scrolling */
+    }
+
+    h2 {
+      text-align: center;
+      margin: 40px 0;
+      font-size: 32px;
+      color: #4a4a4a;
+      position: relative;
+    }
+
+    /* Section styling */
+    .menu-section {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(100px); /* Initially hidden off-screen */
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    /* Starter, Main Course, and Dessert Titles */
+    h3 {
+      margin: 20px 0;
+      font-size: 28px;
+      color: #ff9800;
+      text-align: center;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    /* Menu items styling with 3D text */
+    .menu-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      font-size: 18px;
+      color: #555;
+      opacity: 0;
+      transform: translateZ(-100px) scale(0.8);
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-item.visible {
+      transform: translateZ(0) scale(1);
+      opacity: 1;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .menu-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Scroll-triggered animation */
+    .menu-section.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .menu-section.hidden {
+      transform: translateY(100px);
+      opacity: 0;
+    }
+
+    /* Sticky Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      font-size: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Add some extra margin after the last section to allow room for scrolling */
+    .extra-space {
+      height: 150px; /* Add more space at the bottom of the page */
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    Our Delicious Menu
+  </header>
+
+  <!-- Starters Section -->
+  <section id="starters" class="menu-section">
+    <h3>Starters:</h3>
+    <div class="menu-item">Veg Cutlet</div>
+    <div class="menu-item">Corn Chaat</div>
+    <div class="menu-item">Achari Aloo</div>
+    <div class="menu-item">Chilli Paneer</div>
+    <div class="menu-item">Potato Wedges</div>
+    <div class="menu-item">Dry Manchurian</div>
+    <div class="menu-item">Veg Spring Roll</div>
+    <div class="menu-item">Corn Cheese Ball</div>
+    <div class="menu-item">Cheese Cigar Roll</div>
+    <div class="menu-item">Honey Chili Potato</div>
+    <div class="menu-item">Crispy Cauliflower</div>
+  </section>
+
+  <!-- Main Course Section -->
+  <section id="main-course" class="menu-section">
+    <h3>Main Course:</h3>
+    <div class="menu-item">Rajma</div>
+    <div class="menu-item">Mix Veg</div>
+    <div class="menu-item">Mix Daal</div>
+    <div class="menu-item">Dum Aloo</div>
+    <div class="menu-item">Aloo Gobi</div>
+    <div class="menu-item">Aloo Jeera</div>
+    <div class="menu-item">Tadka Daal</div>
+    <div class="menu-item">Malai Kofta</div>
+    <div class="menu-item">Paneer Corn</div>
+    <div class="menu-item">Palak Paneer</div>
+    <div class="menu-item">Makhani Daal</div>
+    <div class="menu-item">Matar Paneer</div>
+    <div class="menu-item">Paneer Bhurji</div>
+    <div class="menu-item">Punjabi Chole</div>
+    <div class="menu-item">Baigan Bharta</div>
+    <div class="menu-item">Aloo Capsicum</div>
+    <div class="menu-item">Stuff Masala Bhindi</div>
+    <div class="menu-item">Paneer Butter Masala</div>
+  </section>
+
+  <!-- Dessert Section -->
+  <section id="dessert" class="menu-section">
+    <h3>Desserts:</h3>
+    <div class="menu-item">Jelly</div>
+    <div class="menu-item">Fruit Cream</div>
+    <div class="menu-item">Gulab Jamun</div>
+  </section>
+
+  <!-- Add extra space after the last section to enable more scrolling -->
+  <div class="extra-space"></div>
+
+  <script>
+    let lastScrollTop = 0; // Track the scroll direction
+
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('.menu-section');
+      const menuItems = document.querySelectorAll('.menu-item');
+      const triggerPoint = window.innerHeight * 0.75; // Start animation when section is 75% in view
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+
+        // Animate sections as they scroll into view
+        if (sectionTop < triggerPoint && scrollTop > lastScrollTop) {
+          section.classList.add('visible');
+          section.classList.remove('hidden');
+        }
+
+        // Reverse animation when scrolling back up
+        if (scrollTop < lastScrollTop && sectionTop > 100) {
+          section.classList.remove('visible');
+          section.classList.add('hidden');
+        }
+      });
+
+      // Animate individual menu items with 3D effect
+      menuItems.forEach(item => {
+        const itemTop = item.getBoundingClientRect().top;
+
+        if (itemTop < triggerPoint && scrollTop > lastScrollTop) {
+          item.classList.add('visible');
+        }
+
+        // Reverse animation when scrolling back up
+        if (scrollTop < lastScrollTop && itemTop > window.innerHeight) {
+          item.classList.remove('visible');
+        }
+      });
+
+      // Update scroll position
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+  </script>
+
+</body>
+</html>
